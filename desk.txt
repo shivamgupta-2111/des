@@ -1,0 +1,874 @@
+git clone https://github.com/abhinavxd/libredesk.git
+cd libredesk
+cp config.sample.toml config.toml
+docker compose up -d
+docker compose logs -f app
+docker exec -it libredesk_app ./libredesk --set-system-user-password
+System
+
+
+
+main.scss
+  /* ---------- LIGHT ---------- */
+  :root,
+  .light {
+    --background: 60 11% 96%;            /* --light-bg  #f7f7f5 */
+    --foreground: 240 28% 14%;           /* --text-dark #1a1a2e */
+    --foreground-lighter: 240 2% 44%;    /* --text-muted #6e6e73 */
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 28% 14%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 28% 14%;
+
+    --primary: 26 81% 52%;               /* --orange-brand #e87722 */
+    --primary-foreground: 0 0% 100%;     /* --text-light */
+
+    --secondary: 60 3% 92%;
+    --secondary-foreground: 240 28% 14%;
+    --muted: 60 3% 92%;
+    --muted-foreground: 240 2% 44%;      /* --text-muted */
+    --accent: 27 55% 92%;                /* --orange-light tint over light-bg */
+    --accent-foreground: 240 28% 14%;
+
+    --destructive: 2 47% 46%;
+    --destructive-foreground: 9 100% 99%;
+    --success: 142 72% 37%;
+    --success-foreground: 0 0% 98%;
+    --warning: 39 85% 43%;
+    --warning-foreground: 24 45% 2%;
+    --warning-600: 35 92% 33%;
+    --link: 210 100% 40%;
+
+    --border: 60 3% 89%;                 /* --border-light */
+    --input: 60 3% 83%;
+    --ring: 26 81% 52%;
+    --radius: 0.5rem;
+    --private: 35 90% 94%;
+    --canvas: 60 4% 88%;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 240 28% 14%;
+    --sidebar-primary: 26 81% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 27 55% 92%;
+    --sidebar-accent-foreground: 240 28% 14%;
+    --sidebar-border: 60 3% 89%;
+    --sidebar-ring: 26 81% 52%;
+
+    /* Extra brand tokens (not HSL, used directly) */
+    --orange-brand: #e87722;
+    --orange-dark: #d45f1a;
+    --orange-light: rgba(232, 119, 34, 0.1);
+    --glass-bg: rgba(255, 255, 255, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.9);
+    --shadow-sm: 0 2px 20px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 8px 40px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 24px 80px rgba(0, 0, 0, 0.18);
+  }
+
+  /* ---------- DARK ---------- */
+  .dark {
+    --background: 221 44% 7%;            /* --dark-bg #0a0f1a */
+    --foreground: 0 0% 100%;             /* --text-light */
+    --foreground-lighter: 220 4% 58%;
+
+    --card: 240 28% 14%;                 /* --dark-card #1a1a2e */
+    --card-foreground: 0 0% 100%;
+    --popover: 240 26% 17%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 26 81% 52%;
+    --primary-foreground: 221 44% 7%;    /* dark text on orange, see contrast note */
+
+    --secondary: 240 20% 18%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 240 20% 17%;
+    --muted-foreground: 220 4% 58%;      /* --text-muted-dark, nudged up for contrast */
+    --accent: 26 30% 18%;                /* orange tint */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 4 92% 74%;
+    --destructive-foreground: 12 38% 3%;
+    --success: 142 55% 55%;
+    --success-foreground: 142 40% 10%;
+    --warning: 36 87% 62%;
+    --warning-foreground: 24 45% 2%;
+    --warning-600: 36 87% 62%;
+    --link: 210 90% 66%;
+
+    --border: 240 16% 21%;               /* --border-dark */
+    --input: 240 16% 25%;
+    --ring: 26 81% 52%;
+    --private: 30 35% 18%;
+    --canvas: 221 44% 4%;
+
+    --sidebar-background: 221 44% 6%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 26 81% 52%;
+    --sidebar-primary-foreground: 221 44% 7%;
+    --sidebar-accent: 26 30% 18%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 240 16% 21%;
+    --sidebar-ring: 26 81% 52%;
+
+    --glass-bg: rgba(26, 26, 46, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --shadow-sm: 0 2px 20px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 8px 40px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 24px 80px rgba(0, 0, 0, 0.6);
+  }
+
+
+
+----------------------------------------------------------
+frontend/tailwind.config.cjs
+boxShadow: {
+  sm: 'var(--shadow-sm)',
+  md: 'var(--shadow-md)',
+  lg: 'var(--shadow-lg)'
+},
+
+-----------------------------------------------------
+main.scss
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px) saturate(1.4);
+}
+
+
+-------------------------------------------
+frontend/public/manifest.webmanifest: theme_color is hsl(152 39% 30%) (the old green). Set it to 
+#e87722 and background_color to 
+#f7f7f5.
+frontend/public/ has favicon.ico and an images folder. Swap any green logo or favicon.
+
+---------------------------------------------------------------------------------------------
+cd frontend
+npm install -g pnpm     # once
+pnpm install
+pnpm dev
+------------------------------------------------------------
+main.scss
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-size: 16px;
+}
+
+[data-sonner-toaster] {
+  font-family: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Popovers, dialogs and sheets keep their fade but stop sliding and zooming. */
+  *,
+  *::before,
+  *::after {
+    --tw-enter-scale: 1 !important;
+    --tw-enter-translate-x: 0 !important;
+    --tw-enter-translate-y: 0 !important;
+    --tw-exit-scale: 1 !important;
+    --tw-exit-translate-x: 0 !important;
+    --tw-exit-translate-y: 0 !important;
+  }
+
+  .animate-shake,
+  .animate-slide-in,
+  .animate-slide-out,
+  .animate-fade-in-down,
+  .animate-pop,
+  .animate-accordion-down,
+  .animate-accordion-up,
+  .animate-collapsible-down,
+  .animate-collapsible-up {
+    animation: none !important;
+  }
+}
+
+@layer base {
+  html,
+  body {
+    @apply font-sans;
+    --vis-font-family: theme('fontFamily.sans');
+    min-height: 100%;
+    overscroll-behavior: none;
+    -webkit-text-size-adjust: 100%;
+    overflow: hidden;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    @apply bg-background text-foreground;
+  }
+
+  button,
+  a,
+  [role='button'] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    background: hsl(var(--foreground) / 0.15);
+    color: hsl(var(--foreground));
+  }
+
+  .bg-primary ::selection,
+  .bg-primary::selection {
+    background: hsl(var(--primary-foreground) / 0.25);
+    color: hsl(var(--primary-foreground));
+  }
+
+  .bg-secondary ::selection,
+  .bg-secondary::selection {
+    background: hsl(var(--secondary-foreground) / 0.25);
+    color: hsl(var(--secondary-foreground));
+  }
+
+  @media (max-width: 768px) {
+    html,
+    body {
+      overflow-x: auto;
+    }
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  .native-html {
+    p {
+      margin-bottom: 0.5rem;
+    }
+
+    ul {
+      list-style-type: disc;
+      margin-left: 1.5rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    ol {
+      list-style-type: decimal;
+      margin-left: 1.5rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    li {
+      padding-left: 0.25rem;
+    }
+
+    blockquote {
+      @apply my-2 border-l-2 border-border pl-3 text-muted-foreground;
+    }
+
+    p:last-child,
+    ul:last-child,
+    ol:last-child {
+      margin-bottom: 0;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    a {
+      color: hsl(var(--link));
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    // Mention styling — vue-letter scopes classes as msg_XXX_ld-mention
+    [class$="_ld-mention"],
+    [class$="_ld-conversation-reference"],
+    .ld-mention,
+    .ld-conversation-reference {
+      background-color: hsl(var(--primary) / 0.1);
+      border-radius: 0.25rem;
+      padding: 0 0.25rem;
+      color: hsl(var(--primary));
+      font-weight: 500;
+    }
+  }
+  :root {
+    --vis-tooltip-background-color: none !important;
+    --vis-tooltip-border-color: none !important;
+    --vis-tooltip-text-color: none !important;
+    --vis-tooltip-shadow-color: none !important;
+    --vis-tooltip-backdrop-filter: none !important;
+    --vis-tooltip-padding: none !important;
+    --vis-primary-color: var(--primary);
+    --vis-secondary-color: var(--success);
+    --vis-text-color: var(--muted-foreground);
+  }
+
+  /* ---------- LIGHT ---------- */
+  :root,
+  .light {
+    --background: 60 11% 96%;
+    --foreground: 240 28% 14%;
+    --foreground-lighter: 240 2% 44%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 28% 14%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 28% 14%;
+
+    --primary: 26 81% 52%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 60 3% 92%;
+    --secondary-foreground: 240 28% 14%;
+    --muted: 60 3% 92%;
+    --muted-foreground: 240 2% 44%;
+    --accent: 27 55% 92%;
+    --accent-foreground: 240 28% 14%;
+
+    --destructive: 2 47% 46%;
+    --destructive-foreground: 9 100% 99%;
+    --success: 142 72% 37%;
+    --success-foreground: 0 0% 98%;
+    --warning: 39 85% 43%;
+    --warning-foreground: 24 45% 2%;
+    --warning-600: 35 92% 33%;
+    --link: 210 100% 40%;
+
+    --border: 60 3% 89%;
+    --input: 60 3% 83%;
+    --ring: 26 81% 52%;
+    --radius: 0.5rem;
+    --private: 35 90% 94%;
+    --canvas: 60 4% 88%;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 240 28% 14%;
+    --sidebar-primary: 26 81% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 27 55% 92%;
+    --sidebar-accent-foreground: 240 28% 14%;
+    --sidebar-border: 60 3% 89%;
+    --sidebar-ring: 26 81% 52%;
+
+    --orange-brand: #e87722;
+    --orange-dark: #d45f1a;
+    --orange-light: rgba(232, 119, 34, 0.1);
+    --glass-bg: rgba(255, 255, 255, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.9);
+    --shadow-sm: 0 2px 20px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 8px 40px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 24px 80px rgba(0, 0, 0, 0.18);
+  }
+
+  /* ---------- DARK ---------- */
+  .dark {
+    --background: 221 44% 7%;
+    --foreground: 0 0% 100%;
+    --foreground-lighter: 220 4% 58%;
+
+    --card: 240 28% 14%;
+    --card-foreground: 0 0% 100%;
+    --popover: 240 26% 17%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 26 81% 52%;
+    --primary-foreground: 221 44% 7%;
+
+    --secondary: 240 20% 18%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 240 20% 17%;
+    --muted-foreground: 220 4% 58%;
+    --accent: 26 30% 18%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 4 92% 74%;
+    --destructive-foreground: 12 38% 3%;
+    --success: 142 55% 55%;
+    --success-foreground: 142 40% 10%;
+    --warning: 36 87% 62%;
+    --warning-foreground: 24 45% 2%;
+    --warning-600: 36 87% 62%;
+    --link: 210 90% 66%;
+
+    --border: 240 16% 21%;
+    --input: 240 16% 25%;
+    --ring: 26 81% 52%;
+    --private: 30 35% 18%;
+    --canvas: 221 44% 4%;
+
+    --sidebar-background: 221 44% 6%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 26 81% 52%;
+    --sidebar-primary-foreground: 221 44% 7%;
+    --sidebar-accent: 26 30% 18%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 240 16% 21%;
+    --sidebar-ring: 26 81% 52%;
+
+    --glass-bg: rgba(26, 26, 46, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --shadow-sm: 0 2px 20px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 8px 40px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 24px 80px rgba(0, 0, 0, 0.6);
+  }
+}
+
+.message-bubble {
+  @apply flex flex-col px-4 pt-2 pb-3 w-fit md:min-w-[30%] max-w-full border overflow-x-auto rounded-xl shadow-sm;
+
+  @media (max-width: 767px) {
+    overflow-wrap: break-word;
+  }
+
+  .native-html * {
+    max-width: 100%;
+  }
+
+  // Force pre blocks to wrap
+  pre,
+  code {
+    white-space: pre-wrap;
+  }
+
+  table {
+    max-width: 100% !important;
+    table-layout: fixed !important;
+  }
+}
+
+// Sender colours are only legible against white, so incoming email HTML is not themed.
+.dark .email-light-canvas {
+  @apply p-2 rounded border border-border;
+
+  color-scheme: light;
+  background: #fff;
+  color: #1a1a1a;
+}
+
+.overlay {
+  background: hsl(var(--foreground) / 0.5);
+}
+
+@layer components {
+  .ui-heading {
+    @apply text-base font-semibold leading-6 text-foreground;
+  }
+
+  .ui-subheading {
+    @apply text-sm font-semibold leading-5 text-foreground;
+  }
+
+  .ui-description {
+    @apply text-sm font-normal leading-5 text-muted-foreground;
+  }
+
+  .ui-dialog-heading {
+    @apply text-lg font-semibold leading-7 text-foreground;
+  }
+
+  .ui-display-heading {
+    @apply text-2xl font-semibold leading-8 text-foreground;
+  }
+}
+
+.text-sm-muted {
+  @apply text-muted-foreground text-sm;
+}
+
+.sidebar-label {
+  @apply text-sm text-muted-foreground;
+}
+
+.sidebar-value {
+  @apply text-sm text-foreground;
+}
+
+.sidebar-section-label {
+  @apply text-xs font-medium uppercase tracking-wider text-muted-foreground;
+}
+
+.box {
+  @apply border shadow-sm rounded-lg;
+}
+
+.loading-fade {
+  @apply opacity-50 transition-opacity duration-300;
+}
+
+// Scrollbar start
+* {
+  scrollbar-width: auto;
+  scrollbar-color: hsl(var(--border)) transparent;
+}
+
+.dark * {
+  scrollbar-color: hsl(var(--border)) transparent;
+}
+
+@supports selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: initial;
+    scrollbar-color: initial;
+  }
+
+  .dark * {
+    scrollbar-color: initial;
+  }
+
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  .dark *::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+  }
+
+  .dark *::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+}
+// Scrollbar end
+
+.show-quoted-text {
+  blockquote {
+    @apply block;
+  }
+}
+
+.hide-quoted-text {
+  // Selectors below use attribute-suffix matching because vue-letter
+  // prefixes every id/class with a random "msg_XYZ_" at render time, so
+  // raw "#appendonsend" would never match.
+  // Outlook/Hotmail emit a marker with the quoted history as trailing
+  // siblings (no wrapping element), so we hide the marker AND everything
+  // after it. Outlook always top-posts, so trailing siblings are quote.
+  blockquote,
+  [id$="_divRplyFwdMsg"],
+  [id$="_divRplyFwdMsg"] ~ *,
+  [id$="_appendonsend"],
+  [id$="_appendonsend"] ~ *,
+  [id$="_OLK_SRC_BODY_SECTION"],
+  [id$="_OLK_SRC_BODY_SECTION"] ~ *,
+  [class*="_OutlookMessageHeader"],
+  [class*="_OutlookMessageHeader"] ~ *,
+  [class*="_yahoo_quoted"],
+  [class*="_gmail_quote_container"],
+  [class*="_protonmail_quote"] {
+    @apply hidden;
+  }
+}
+
+[data-radix-popper-content-wrapper] {
+  z-index: 9999 !important;
+}
+
+// Emoji picker theme
+.v3-emoji-picker {
+  --v3-picker-bg: hsl(var(--popover)) !important;
+  --v3-picker-fg: hsl(var(--popover-foreground)) !important;
+  --v3-picker-border: hsl(var(--border)) !important;
+  --v3-picker-input-bg: hsl(var(--input)) !important;
+  --v3-picker-input-border: hsl(var(--border)) !important;
+  --v3-picker-input-focus-border: hsl(var(--ring)) !important;
+  --v3-picker-emoji-hover: hsl(var(--muted)) !important;
+}
+
+.dark .v3-emoji-picker {
+  --v3-group-image-filter: invert(1) !important;
+}
+
+// The picker's ~350px default overflows off-screen right on a 390px viewport.
+@media (max-width: 767px) {
+  .v3-emoji-picker {
+    width: min(20rem, calc(100vw - 2rem)) !important;
+  }
+}
+
+// Hide number input spinners.
+.hide-number-spinners {
+  -moz-appearance: textfield;
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+// Components
+@layer components {
+  .link-style {
+    @apply text-muted-foreground underline underline-offset-4 hover:text-foreground transition-colors;
+  }
+
+  .drag-ghost {
+    @apply bg-accent/60 opacity-60;
+  }
+}
+
+@property --ai-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.ai-generating {
+  box-shadow: 0 6px 22px -10px hsl(var(--primary) / 0.28);
+}
+
+.ai-generating::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--ai-angle),
+    hsl(var(--primary)) 0deg,
+    hsl(var(--primary) / 0) 90deg,
+    hsl(var(--primary) / 0) 180deg,
+    hsl(var(--primary)) 180deg,
+    hsl(var(--primary) / 0) 270deg,
+    hsl(var(--primary) / 0) 360deg
+  );
+  filter: drop-shadow(0 0 5px hsl(var(--primary) / 0.5));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: ai-border-spin 2.4s linear infinite;
+  pointer-events: none;
+  z-index: 20;
+}
+
+@keyframes ai-border-spin {
+  to {
+    --ai-angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-generating {
+    box-shadow: 0 0 0 1.5px hsl(var(--primary) / 0.4);
+  }
+  .ai-generating::after {
+    display: none;
+  }
+}
+
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px) saturate(1.4);
+}
+
+----------------------------------------------------------------
+frontend/vite.config.js
+fs: {
+  allow: [
+    path.resolve(__dirname),
+    path.resolve(__dirname, '../static/public/static'),
+    path.resolve(__dirname, '../i18n'),
+  ],
+},
+
+----------------------------------------------
+import enUS from '../../../../i18n/en-US.json'
+  const i18nConfig = {
+    legacy: false,
+    locale: lang,
+    fallbackLocale: 'en-US',
+    messages: {
+      'en-US': enUS,
+      [lang]: lang === 'en-US' ? { ...enUS, ...langMessages.data } : langMessages.data
+    }
+  }
+
+-------------------------AuthLayout.vue
+
+<template>
+  <div class="auth-root h-screen overflow-y-auto overscroll-contain bg-background">
+    <div class="grid min-h-full lg:grid-cols-[1.05fr_1fr]">
+      <!-- Brand panel (desktop only, always dark) -->
+      <aside class="brand-panel relative hidden overflow-hidden lg:flex lg:flex-col lg:justify-between p-12">
+        <div class="brand-glow-a absolute" aria-hidden="true" />
+        <div class="brand-glow-b absolute" aria-hidden="true" />
+
+        <div class="relative flex items-center gap-2.5">
+          <img v-if="logoSrc" :src="logoSrc" :alt="siteName" class="logo-on-dark h-9 w-auto" />
+          <template v-else>
+            <span class="brand-dot" aria-hidden="true" />
+            <span class="text-xl font-semibold tracking-tight text-white">{{ siteName }}</span>
+          </template>
+        </div>
+
+        <div class="relative max-w-md space-y-6">
+          <h2 class="text-4xl font-semibold leading-tight tracking-tight text-white">
+            {{ headline }}
+          </h2>
+          <p class="text-base leading-relaxed brand-muted">{{ subline }}</p>
+          <ul class="space-y-3 pt-2">
+            <li v-for="point in points" :key="point" class="flex items-center gap-3 text-sm text-white/90">
+              <Check class="h-4 w-4 shrink-0 text-[#e87722]" aria-hidden="true" />
+              {{ point }}
+            </li>
+          </ul>
+        </div>
+
+        <p class="relative text-xs brand-muted">&copy; {{ year }} {{ siteName }}</p>
+      </aside>
+
+      <!-- Form panel -->
+      <div class="form-panel relative isolate flex min-h-full flex-col">
+        <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+          <div class="form-glow" />
+        </div>
+
+        <!-- Mobile logo / wordmark -->
+        <div class="relative flex items-center gap-2.5 px-6 pt-8 lg:hidden">
+          <img v-if="logoSrc" :src="logoSrc" :alt="siteName" class="h-8 w-auto" />
+          <template v-else>
+            <span class="brand-dot" aria-hidden="true" />
+            <span class="text-lg font-semibold tracking-tight text-foreground">{{ siteName }}</span>
+          </template>
+        </div>
+
+        <main class="relative flex flex-1 items-center justify-center px-4 py-10 sm:px-6">
+          <div class="auth-content w-full max-w-sm">
+            <slot />
+          </div>
+        </main>
+        <footer class="relative flex justify-center px-4 pb-6">
+          <PoweredBy />
+        </footer>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { computed } from 'vue'
+import { Check } from 'lucide-vue-next'
+import PoweredBy from '@shared-ui/components/PoweredBy.vue'
+import { useAppSettingsStore } from '@main/stores/appSettings'
+
+const appSettingsStore = useAppSettingsStore()
+const siteName = computed(() => appSettingsStore.public_config?.['app.site_name'] || 'libredesk')
+const year = new Date().getFullYear()
+
+// ---- LOGO -------------------------------------------------------------
+// Option A (no code): Admin > Settings > General > Logo URL. It is picked up here.
+// Option B: put a file in frontend/public/images/ and set its path below,
+//           e.g. const LOCAL_LOGO = '/images/my-logo.png'
+const LOCAL_LOGO = ''
+const logoSrc = computed(() => LOCAL_LOGO || appSettingsStore.public_config?.['app.logo_url'] || '')
+
+// ---- COPY (edit freely) -----------------------------------------------
+const headline = 'Every customer conversation, in one calm inbox.'
+const subline = 'Answer email, live chat and WhatsApp from a single place, on your own infrastructure.'
+const points = [
+  'Email, live chat and WhatsApp',
+  'SLAs, automations and canned replies',
+  'Open source and self-hosted'
+]
+</script>
+
+<style scoped>
+/* ---------- Brand panel (fixed dark palette, no lines) ---------- */
+.brand-panel {
+  background: #0a0f1a; /* --dark-bg */
+}
+.brand-muted {
+  color: rgba(255, 255, 255, 0.55);
+}
+.brand-glow-a {
+  width: 520px;
+  height: 520px;
+  top: -160px;
+  left: -140px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(232, 119, 34, 0.35), transparent 65%);
+  filter: blur(20px);
+}
+.brand-glow-b {
+  width: 420px;
+  height: 420px;
+  bottom: -160px;
+  right: -120px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(212, 95, 26, 0.25), transparent 65%);
+  filter: blur(20px);
+}
+.brand-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: #e87722; /* --orange-brand */
+}
+/* Turns any single-colour logo white so it shows on the dark panel.
+   Remove this rule if your logo already works on dark. */
+.logo-on-dark {
+  filter: brightness(0) invert(1);
+}
+
+/* ---------- Form panel (follows light / dark theme) ---------- */
+.form-glow {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  width: 560px;
+  height: 560px;
+  transform: translateX(-50%);
+  border-radius: 9999px;
+  background: radial-gradient(circle, hsl(var(--primary) / 0.12), transparent 65%);
+  filter: blur(30px);
+}
+
+/* No card: the form sits directly on the page */
+.auth-content > :deep(*) {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Borderless, softly filled inputs */
+.auth-content :deep(input) {
+  background: hsl(var(--secondary));
+  border-color: transparent;
+  box-shadow: none;
+}
+.auth-content :deep(input:focus),
+.auth-content :deep(input:focus-visible) {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--primary) / 0.55);
+}
+</style>
+---------------------------------
