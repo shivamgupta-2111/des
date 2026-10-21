@@ -1,0 +1,70 @@
+# Production-style compose for http://30.4.5.6:1001
+# Builds the app from YOUR customised source (Dockerfile.custom) instead of pulling the stock image.
+services:
+  # Libredesk app
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.custom
+      args:
+        VERSION: custom
+    image: libredesk-custom:latest
+    container_name: libredesk_app
+    restart: unless-stopped
+    ports:
+      # host port 1001  ->  container port 9000
+      - "1001:9000"
+    environment:
+      # Only used on the very first start (sets the System user's password). Comes from .env
+      LIBREDESK_SYSTEM_USER_PASSWORD: ${LIBREDESK_SYSTEM_USER_PASSWORD:-}
+    networks:
+      - libredesk
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - ./uploads:/libredesk/uploads:rw
+      - ./config.toml:/libredesk/config.toml
+    command: [sh, -c, "./libredesk --install --idempotent-install --yes --config /libredesk/config.toml && ./libredesk --upgrade --yes --config /libredesk/config.toml && ./libredesk --config /libredesk/config.toml"]
+
+  # PostgreSQL database (not reachable from outside the server)
+  db:
+    image: postgres:17-alpine
+    container_name: libredesk_db
+    restart: unless-stopped
+    networks:
+      - libredesk
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-libredesk}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-libredesk}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-libredesk} -d ${POSTGRES_DB:-libredesk}"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  # Redis (not reachable from outside the server)
+  redis:
+    image: redis:7-alpine
+    container_name: libredesk_redis
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379"
+    networks:
+      - libredesk
+    volumes:
+      - redis-data:/data
+
+networks:
+  libredesk:
+
+volumes:
+  postgres-data:
+  redis-data:
